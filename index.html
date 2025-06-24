@@ -134,26 +134,31 @@
               </table>
             </td>
           </tr>
-        </table>
+        </table>table>
       `;
 
       assinaturaDiv.innerHTML = assinaturaHTML;
       document.getElementById("copiarBtn").style.display = "inline-block";
+      alert('Utilize o botão para copiar assinatura');
     }
 
     function copiarAssinatura() {
       const assinaturaDiv = document.getElementById("assinatura");
+
       const range = document.createRange();
       range.selectNodeContents(assinaturaDiv);
+
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
+
       try {
         document.execCommand('copy');
         alert("Assinatura copiada com sucesso!");
       } catch (err) {
         alert("Erro ao copiar");
       }
+
       selection.removeAllRanges();
     }
   </script>
