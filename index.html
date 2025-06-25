@@ -12,7 +12,7 @@
       display: block;
       margin-top: 10px;
     }
-    input {
+    input, select {
       width: 300px;
       padding: 5px;
     }
@@ -24,7 +24,6 @@
   </style>
 </head>
 <body>
-  <!-- LOGO ACIMA DO TÍTULO -->
   <a href="https://www.smxlogistics.com" target="_blank">
     <img src="https://i.imgur.com/Hj6iqeC.png" alt="SMX Logo" style="width:100%; max-width:180px; height:auto; display:block; margin-bottom:10px;">
   </a>
@@ -37,8 +36,16 @@
   <label for="cargo">Cargo:</label>
   <input type="text" id="cargo" placeholder="Ex: Cargo em português" />
 
-  <label for="whatsapp">WhatsApp (DDD + número):</label>
-  <input type="text" id="whatsapp" placeholder="Ex: 47912345678" />
+  <label for="temWhatsapp">Possuo WhatsApp corporativo?</label>
+  <select id="temWhatsapp" onchange="toggleWhatsappCampo()">
+    <option value="nao">Não</option>
+    <option value="sim">Sim</option>
+  </select>
+
+  <div id="whatsappWrapper" style="display:none;">
+    <label for="whatsapp">WhatsApp (DDD + número):</label>
+    <input type="text" id="whatsapp" placeholder="Ex: 47992800687" />
+  </div>
 
   <br><br>
   <button onclick="gerarAssinatura()">Gerar Assinatura</button>
@@ -47,6 +54,11 @@
   <div id="assinatura" contenteditable="true" style="user-select: all;"></div>
 
   <script>
+    function toggleWhatsappCampo() {
+      const temWhatsapp = document.getElementById("temWhatsapp").value === "sim";
+      document.getElementById("whatsappWrapper").style.display = temWhatsapp ? "block" : "none";
+    }
+
     function capitalizarNome(nomeCompleto) {
       return nomeCompleto
         .toLowerCase()
@@ -60,21 +72,26 @@
       const nomeRaw = document.getElementById("nome").value.trim();
       const nome = capitalizarNome(nomeRaw);
       const cargo = document.getElementById("cargo").value.trim();
-      const whatsappRaw = document.getElementById("whatsapp").value.trim().replace(/\D/g, '');
-      const assinaturaDiv = document.getElementById("assinatura");
+      const temWhatsapp = document.getElementById("temWhatsapp").value === "sim";
+      let whatsappRaw = temWhatsapp ? document.getElementById("whatsapp").value.trim().replace(/\D/g, '') : "";
+      let whatsappDisplay = "";
 
       if (!nome || !cargo) {
         alert("Preencha o nome e o cargo.");
         return;
       }
 
+      if (whatsappRaw.length >= 11) {
+        const ddd = whatsappRaw.substring(0, 2);
+        const prefixo = whatsappRaw.substring(2, 7);
+        const sufixo = whatsappRaw.substring(7, 11);
+        whatsappDisplay = `+55 ${ddd} ${prefixo}-${sufixo}`;
+      }
+
       const nomeEmail = nome.toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-zA-Z\s]/g, "").split(" ").join(".");
-
       const email = `${nomeEmail}@smxlogistics.com`;
-      const whatsappDisplay = whatsappRaw ? `+55 ${whatsappRaw}` : "+55 47 3083-5500";
-      const whatsappLink = whatsappRaw ? `https://wa.me/55${whatsappRaw}` : `https://wa.me/554730835500`;
 
       const assinaturaHTML = `
         <table cellpadding="0" cellspacing="0" border="0" style="font-family:'Aptos', sans-serif; font-size:medium;">
@@ -88,19 +105,26 @@
               <h2 style="color:#000; margin:0; font-size:12pt;">${nome}</h2>
               <div style="font-size:10pt; color:#000;">${cargo}</div>
               <table cellpadding="0" cellspacing="0" border="0" width="275" style="margin:6px 0; border-collapse:collapse;">
-                <tr>
-                  <td height="1" style="background-color:#005BA8; height:1px;"></td>
-                </tr>
+                <tr><td height="1" style="background-color:#005BA8;"></td></tr>
               </table>
               <table cellpadding="0" cellspacing="0" border="0" width="300" style="font-size:10pt;">
+                <tr>
+                  <td style="vertical-align:middle; padding-right:7px;">
+                    <img src="https://i.imgur.com/jfZcQAt.png" width="13" style="display:block;">
+                  </td>
+                  <td style="vertical-align:middle;">
+                    <a href="tel:+554730653535" style="color:#000; text-decoration:none;">+55 47 3065-3535</a>
+                  </td>
+                </tr>
+                ${whatsappRaw ? `
                 <tr>
                   <td style="vertical-align:middle; padding-right:7px;">
                     <img src="https://i.imgur.com/yCyPU81.png" width="13" style="display:block;">
                   </td>
                   <td style="vertical-align:middle;">
-                    <a href="${whatsappLink}" target="_blank" style="color:#000; text-decoration:none;">${whatsappDisplay}</a>
+                    <a href="https://wa.me/55${whatsappRaw}" target="_blank" style="color:#000; text-decoration:none;">${whatsappDisplay}</a>
                   </td>
-                </tr>
+                </tr>` : ''}
                 <tr>
                   <td style="vertical-align:middle; padding-right:7px;">
                     <img src="https://i.imgur.com/ZjMusJI.png" width="13" style="display:block;">
@@ -137,17 +161,15 @@
         </table>
       `;
 
-      assinaturaDiv.innerHTML = assinaturaHTML;
+      document.getElementById("assinatura").innerHTML = assinaturaHTML;
       document.getElementById("copiarBtn").style.display = "inline-block";
       alert('Utilize o botão para copiar assinatura');
     }
 
     function copiarAssinatura() {
       const assinaturaDiv = document.getElementById("assinatura");
-
       const range = document.createRange();
       range.selectNodeContents(assinaturaDiv);
-
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
