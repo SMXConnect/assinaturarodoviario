@@ -97,18 +97,19 @@
     <table style="width: auto;min-width: 50%;">
       <tr style="">
         <td style="vertical-align: top;width: 170px;padding: 10px;">
-          <img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/logo_rotapharma-smxlogistics_vertical_cor.png" style="width: 160px;" alt="Logo da SMX Logistics e Rota Pharma"/>
+          <img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/logo_rotapharma-smxlogistics_vertical_cor_160px.png" style="width: 160px;" alt="Logo da SMX Logistics e Rota Pharma"/>
         </td>
         <td style="vertical-align: top;padding-top: 10px;padding-left: 15px;font-family: 'Segoe UI', sans-serif;">
-          <span style="display: block;font-weight: 700;font-size: 13pt;color: #004482;">${nome}</span>
-          <span style="display: block;font-weight: 600;font-size: 12pt;color: #004482;">${cargo}</span>
-          <hr style="color: #000;border-style: solid;border-width: 1px 0 1px 0;margin: 0;max-width: 350px;" />
-          <span style="display: block;font-size: 11pt;"><a href="mailto:luan.santos@smxlogistics.com" style="text-decoration: none;color: inherit;">${email}</a></span>
-          ${whatsappRaw ? `<span style="display: block;font-size: 11pt;"><a href="https://wa.me/55${whatsappRaw}" style="text-decoration: none;color: inherit;">${whatsappDisplay}</a></span>` : ''}
-          <div style="display: block;padding-top: 20px;">
-            <a href="https://www.smxlogistics.com/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_site.png" style="height: 20px;padding-right: 12px;" /></a>
-            <a href="https://www.linkedin.com/company/9212430"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_LinkedIn.png" style="height: 20px;padding-right: 12px;" /></a>
-            <a href="https://www.instagram.com/smxlogistics/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_Instagram.png" style="height: 20px;padding-right: 12px;" /></a>
+          <h1 style="display: block;font-weight: 700;font-size: 13pt;color: #004482;margin: 0;">${nome}</h1>
+          <h2 style="display: block;font-weight: 600;font-size: 12pt;color: #004482;margin: 0;">${cargo}</h2>
+          <img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/separador.png" style="display: block" />
+          <h3 style="display: block;font-weight: 500;font-size: 11pt;margin: 0;"><a href="mailto:luan.santos@smxlogistics.com" style="text-decoration: none;color: #000;">${email}</a></h3>
+          ${whatsappRaw ? `<h3 style="display: block;font-weight: 500;font-size: 11pt;margin: 0;"><a href="https://wa.me/55${whatsappRaw}" style="text-decoration: none;color: #000;">${whatsappDisplay}</a></h3>` : ''}
+          <br />
+          <div style="display: block;">
+            <a href="https://www.smxlogistics.com/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_site_20px.png" style="height: 20px;" /></a>&nbsp;&nbsp;
+            <a href="https://www.linkedin.com/company/9212430"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_LinkedIn_20px.png" style="height: 20px;" /></a>&nbsp;&nbsp;
+            <a href="https://www.instagram.com/smxlogistics/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_Instagram_20px.png" style="height: 20px;" /></a>
           </div>
         </td>
       </tr>
@@ -137,7 +138,6 @@
 
       selection.removeAllRanges();
     }
-
   </script>
 
 </body>
