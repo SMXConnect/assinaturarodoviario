@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerador de Assinaturas - Rota Pharma</title>
+  <style>
+    body {
+      font-family: 'Aptos', sans-serif;
+      padding: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      width: 300px;
+      padding: 5px;
+    }
+    #assinatura {
+      margin-top: 20px;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <a href="https://www.smxlogistics.com" target="_blank">
+    <img src="https://static.wixstatic.com/media/8b8eef_5739443242dc4852b43c26a5354568e0~mv2.png" alt="SMX Logo" style="width:100%; max-width:180px; height:auto; display:block; margin-bottom:10px;">
+  </a>
+
+  <h2>Gerador de Assinaturas</h2>
+
+  <label for="nome">Nome de exibição:</label>
+  <input type="text" id="nome" placeholder="Ex: Nome Sobrenome" />
+
+  <label for="cargo">Cargo:</label>
+  <input type="text" id="cargo" placeholder="Ex: Cargo em português" />
+
+  <label for="temWhatsapp">Possuo WhatsApp corporativo?</label>
+  <select id="temWhatsapp" onchange="toggleWhatsappCampo()">
+    <option value="nao">Não</option>
+    <option value="sim">Sim</option>
+  </select>
+
+  <div id="whatsappWrapper" style="display:none;">
+    <label for="whatsapp">WhatsApp (DDD + número):</label>
+    <input type="text" id="whatsapp" placeholder="Ex: 47992800687" />
+  </div>
+
+  <br><br>
+  <button onclick="gerarAssinatura()">Gerar Assinatura</button>
+  <button id="copiarBtn" onclick="copiarAssinatura()" style="display:none; margin-left:10px;">Copiar Assinatura</button>
+
+  <div id="assinatura" contenteditable="true" style="user-select: all;"></div>
+
+  <script>
+    function toggleWhatsappCampo() {
+      const temWhatsapp = document.getElementById("temWhatsapp").value === "sim";
+      document.getElementById("whatsappWrapper").style.display = temWhatsapp ? "block" : "none";
+    }
+
+    function capitalizarNome(nomeCompleto) {
+      return nomeCompleto
+        .toLowerCase()
+        .split(' ')
+        .filter(p => p.length > 0)
+        .map(p => p[0].toUpperCase() + p.slice(1))
+        .join(' ');
+    }
+
+    function gerarAssinatura() {
+      const nomeRaw = document.getElementById("nome").value.trim();
+      // const nome = capitalizarNome(nomeRaw);
+      const nome = nomeRaw.toUpperCase();
+      const cargo = document.getElementById("cargo").value.trim();
+      const temWhatsapp = document.getElementById("temWhatsapp").value === "sim";
+      let whatsappRaw = temWhatsapp ? document.getElementById("whatsapp").value.trim().replace(/\D/g, '') : "";
+      let whatsappDisplay = "";
+
+      if (!nome || !cargo) {
+        alert("Preencha o nome e o cargo.");
+        return;
+      }
+
+      if (whatsappRaw.length >= 11) {
+        const ddd = whatsappRaw.substring(0, 2);
+        const prefixo = whatsappRaw.substring(2, 7);
+        const sufixo = whatsappRaw.substring(7, 11);
+        whatsappDisplay = `+55 ${ddd} ${prefixo}-${sufixo}`;
+      }
+
+      const nomeEmail = nome.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z\s]/g, "").split(" ").join(".");
+      const email = `${nomeEmail}@smxlogistics.com`;
+
+      // const assinaturaHTML = `
+      //   <table cellpadding="0" cellspacing="0" border="0" style="font-family:'Aptos', sans-serif; font-size:medium;">
+      //     <tr>
+      //       <td valign="top">
+      //         <a href="https://www.smxlogistics.com" target="_blank">
+      //           <img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/logo_rotapharma-smxlogistics_vertical_cor.png" width="180" style="max-width:180px; height:auto; display:block; border:0;">
+      //         </a>
+      //       </td>
+      //       <td style="padding-left:10px; padding-top:6px;" valign="top">
+      //         <h2 style="color:#000; margin:0; font-size:12pt;">${nome}</h2>
+      //         <div style="font-size:10pt; color:#000;">${cargo}</div>
+      //         <table cellpadding="0" cellspacing="0" border="0" width="275" style="margin:6px 0; border-collapse:collapse;">
+      //           <tr><td height="1" style="background-color:#005BA8;"></td></tr>
+      //         </table>
+      //         <table cellpadding="0" cellspacing="0" border="0" width="300" style="font-size:10pt;">
+      //           ${whatsappRaw ? `
+      //           <tr>
+      //             <td style="vertical-align:middle; padding-right:7px;">
+      //               <img src="https://static.wixstatic.com/media/8b8eef_c56e6cd980284e62a7c7df4dd12a0cf3~mv2.png" width="13" style="display:block;">
+      //             </td>
+      //             <td style="vertical-align:middle;">
+      //               <a href="https://wa.me/55${whatsappRaw}" target="_blank" style="color:#000; text-decoration:none;">${whatsappDisplay}</a>
+      //             </td>
+      //           </tr>` : ''}
+      //           <tr>
+      //             <td style="vertical-align:middle; padding-right:7px;">
+      //               <img src="https://static.wixstatic.com/media/8b8eef_27a08b68346b48dc96ae67a879c7c17d~mv2.png" width="13" style="display:block;">
+      //             </td>
+      //             <td style="vertical-align:middle;">
+      //               <a href="mailto:${email}" style="color:#000; text-decoration:none;">${email}</a>
+      //             </td>
+      //           </tr>
+      //           <tr>
+      //             <td style="vertical-align:middle; padding-right:7px;">
+      //               <img src="https://static.wixstatic.com/media/8b8eef_355718ca0fe14171980bd56539c240d7~mv2.png" width="13" style="display:block;">
+      //             </td>
+      //             <td style="vertical-align:middle;">
+      //               <a href="https://www.smxlogistics.com/" target="_blank" style="color:#000; text-decoration:none;">www.smxlogistics.com</a>
+      //             </td>
+      //           </tr>
+      //         </table>
+      //         <table cellpadding="0" cellspacing="0" border="0" style="margin-top:5px;">
+      //           <tr>
+      //             <td>
+      //               <a href="https://www.linkedin.com/company/9212430" target="_blank">
+      //                 <img src="https://static.wixstatic.com/media/8b8eef_1d62532dcb9249e69efb79179af0e4a2~mv2.png" width="18" style="display:block;">
+      //               </a>
+      //             </td>
+      //             <td style="padding-left:0px;">
+      //               <a href="https://www.instagram.com/smxlogistics/" target="_blank">
+      //                 <img src="https://static.wixstatic.com/media/8b8eef_5c708c27a5cb415dad5c2300155dd300~mv2.png" width="18" style="display:block;">
+      //               </a>
+      //             </td>
+      //           </tr>
+      //         </table>
+      //       </td>
+      //     </tr>
+      //   </table>
+      // `;
+
+      const assinaturaHTML = `<div style="display: block;width: 100%;background-color: #fff;">
+    <table style="width: auto;min-width: 50%;">
+      <tr style="">
+        <td style="vertical-align: top;width: 170px;padding: 10px;">
+          <img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/logo_rotapharma-smxlogistics_vertical_cor.png" style="width: 100%;" alt="Logo da SMX Logistics e Rota Pharma"/>
+        </td>
+        <td style="vertical-align: top;padding-top: 10px;padding-left: 15px;font-family: 'Segoe UI', sans-serif;">
+          <span style="display: block;font-weight: 700;font-size: 13pt;color: #004482;">${nome}</span>
+          <span style="display: block;font-weight: 600;font-size: 12pt;color: #004482;">${cargo}</span>
+          <hr style="color: #000;border-style: solid;border-width: 1px 0 1px 0;margin: 0;max-width: 350px;" />
+          <span style="display: block;font-size: 11pt;"><a href="mailto:luan.santos@smxlogistics.com" style="text-decoration: none;color: inherit;">${email}</a></span>
+          ${whatsappRaw ? `<span style="display: block;font-size: 11pt;"><a href="https://wa.me/55${whatsappRaw}" style="text-decoration: none;color: inherit;">${whatsappDisplay}</a></span>` : ''}
+          <div style="display: block;padding-top: 20px;">
+            <a href="https://www.smxlogistics.com/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_site.png" style="height: 20px;padding-right: 12px;" /></a>
+            <a href="https://www.linkedin.com/company/9212430"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_LinkedIn.png" style="height: 20px;padding-right: 12px;" /></a>
+            <a href="https://www.instagram.com/smxlogistics/"><img src="https://www.smxlogistics.com/wp-content/uploads/rodoviario/EmailAssinatura_RotaPharma/icon_Instagram.png" style="height: 20px;padding-right: 12px;" /></a>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>`;
+
+      document.getElementById("assinatura").innerHTML = assinaturaHTML;
+      document.getElementById("copiarBtn").style.display = "inline-block";
+      // alert('Utilize o botão para copiar assinatura');
+    }
+
+    function copiarAssinatura() {
+      const assinaturaDiv = document.getElementById("assinatura");
+      const range = document.createRange();
+      range.selectNodeContents(assinaturaDiv);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      try {
+        document.execCommand('copy');
+        // alert("Assinatura copiada com sucesso!");
+      } catch (err) {
+        alert("Erro ao copiar");
+      }
+
+      selection.removeAllRanges();
+    }
+
+    document.getElementById("nome").value = "Luan Carvalho";
+    document.getElementById("cargo").value = "Assistente de TI";
+    document.getElementById("temWhatsapp").value = "sim";
+    toggleWhatsappCampo();
+    document.getElementById("whatsapp").value = "91 993129904";
+    gerarAssinatura();
+  </script>
+
+</body>
+</html>
